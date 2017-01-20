@@ -14,23 +14,23 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 
-    <link rel="canonical" href="https://browser.ml/">
+    <link rel="canonical" href="https://salat.gq/">
     <meta name="author" content="Khaled Monsoor">
-    <link rel="image_src" href="https://browser.ml/favicon.ico">
-    <meta property="og:image" content="https://browser.ml/favicon.ico">
+    <link rel="image_src" href="https://salat.gq/favicon.ico">
+    <meta property="og:image" content="https://salat.gq/favicon.ico">
     <meta name="description" content="See your browser's general information very quickly ...">
     <meta property="og:site_name" content="Your Browser Info. Fast.">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="en_US">
     <meta property="og:title" content="Your Browser Info. Fast.">
-    <meta property="og:url" content="https://browser.ml/">
+    <meta property="og:url" content="https://salat.gq/">
     <meta property="og:description" content="See your browser's general information very quickly ...">
     <meta name="twitter:site" content="@KhaledMonsoor">
     <meta name="twitter:creator" content="@KhaledMonsoor">
-    <meta name="twitter:image" content="https://browser.ml/favicon.ico">
+    <meta name="twitter:image" content="https://salat.gq/favicon.ico">
     <meta name="twitter:card" content="See your browser's general information very quickly ...">
-    <link rel="icon" href="https://browser.ml/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="https://browser.ml/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://salat.gql/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="https://salat.gq/favicon.ico" type="image/x-icon">
     <style>
         h4 {
             color: #646464;
@@ -55,52 +55,70 @@
     <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-    <h4 class="title">Your Browser</h4>
-    <h2 id='name'></h2>
-    <h3 id='version'></h3>
-    <hr/>
 
-    <h4>Operating system</h4>
-    <h2 id='os-name'></h2>
-    <h3 id='os-version'></h3>
-    <hr/>
-
-    <h4>System Time</h4>
+    <h4>Current Time</h4>
     <h2 id='time'></h2>
     <hr/>
 
-    <h4>Public IP</h4>
-    <h2 id='ip'></h2>
+    <h4 class="title">Your Location</h4>
+    <h3 id='ip'>fetching IP-location information</h3>
+    <h3 id='location'></h3>
+    <hr/>
+
+    <h4>Salat times</h4>
+    <h2 id='fazr'></h2>
+    <h2 id='zuhr'></h2>
+    <h2 id='hAsr'></h2>
+    <h2 id='sAsr'></h2>
+    <h2 id='Maghrib'></h2>
+    <h2 id='Isha'></h2>
     <hr/>
 
     <footer align="right"><a href="/about.html">About</a></footer>
 
     <!-- <h3>Initiative by: <a href="https://kmonsoor.com">Khaled Monsoor</a></h3> -->
 
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.6/jstz.min.js"></script>
     <script>
+    var coordinates = [];
+        function timeNow() {
+            var d = new Date(),
+                h = (d.getHours() < 10 ? '0' : '') + d.getHours(),
+                m = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
+            return h + ':' + m;
+        }
+
         $(document).ready(function() {
             console.log('I always like curious minds like me ... ;)');
-            $.getScript("js/main.min.js")
-                .done(function() {
-                    var browserInfo = getBrowser();
-                    var osInfo = getOS();
-                    $('#name').text(browserInfo[0]);
-                    $('#version').text(browserInfo[1]);
-                    $('#os-name').text(osInfo[0]);
-                    $('#os-version').text(osInfo[1]);
 
-                    console.log('fetching Timezone information ...');
-                    $.getScript("https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.6/jstz.min.js")
-                        .done(function() {
-                            $('#time').text(timeNow() + '  (' + jstz.determine().name() + ')');
+            console.log('fetching IP information ... please wait');
+            $.getJSON('https://freegeoip.net/json/?callback=?', function(ipData) {
+                $('#time').text(timeNow() + '  (' + jstz.determine().name() + ')');
+                $('#ip').text('Your public IP: ' + ipData['ip']);
+                console.log(ipData);
+                coordinates = [ipData['latitude'], ipData['longitude']];
+                $('#location').text('Determined location: ' + ipData['latitude'] + ',' + ipData['longitude'] + '  (' + ipData['city'] + ',' + ipData['country_name'] + ')');
+
+                $.getScript("js/prayTimes.js")
+                    .done(function() {
+                        console.log('salat times module loaded');
+                        prayTimes.setMethod('Karachi');
+                        var hTimes = prayTimes.getTimes(new Date(), coordinates);
+                        prayTimes.adjust({
+                            asr: 'Hanafi'
                         });
+                        var sTimes = prayTimes.getTimes(new Date(), coordinates);
+                        $('#fazr').text('Fajr: ' + hTimes['fajr']);
+                        $('#sunrise').text('Fajr: ' + hTimes['sunrise']);
+                        $('#zuhr').text('zuhr: ' + hTimes['dhuhr']);
+                        $('#hAsr').text('A\'sr (hanafi): ' + hTimes['asr']);
+                        // $('#sAsr').text('A\'sr (Standard): ' + sTimes['asr']);
+                        $('#sAsr').text('Maghrib: ' + hTimes['maghrib']);
+                        $('#fazr').text('Isha: ' + hTimes['isha']);
 
-                    console.log('fetching IP information ... please wait');
-                    $.getJSON('https://freegeoip.net/json/?callback=?', function(data) {
-                        $('#ip').text(data['ip'] + '  (' + data['country_name'] + ')');
                     });
-                });
 
+            });
 
             (function(i, s, o, g, r, a, m) {
                 i['GoogleAnalyticsObject'] = r;
