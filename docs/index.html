@@ -8,8 +8,8 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Your Browser Info. Fast.</title>
-    <meta name="description" content="Your Browser Info. Fast.">
+    <title>Your Salat Times. Get Quickly</title>
+    <meta name="description" content="Your Salat Times. Get Quickly">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
@@ -18,17 +18,17 @@
     <meta name="author" content="Khaled Monsoor">
     <link rel="image_src" href="https://salat.gq/favicon.ico">
     <meta property="og:image" content="https://salat.gq/favicon.ico">
-    <meta name="description" content="See your browser's general information very quickly ...">
-    <meta property="og:site_name" content="Your Browser Info. Fast.">
+    <meta name="description" content="See salat times in your location; very quickly ...">
+    <meta property="og:site_name" content="Your Salat Times. Get Quickly">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="en_US">
     <meta property="og:title" content="Your Browser Info. Fast.">
     <meta property="og:url" content="https://salat.gq/">
-    <meta property="og:description" content="See your browser's general information very quickly ...">
+    <meta property="og:description" content="See salat times in your location; very quickly ...">
     <meta name="twitter:site" content="@KhaledMonsoor">
     <meta name="twitter:creator" content="@KhaledMonsoor">
     <meta name="twitter:image" content="https://salat.gq/favicon.ico">
-    <meta name="twitter:card" content="See your browser's general information very quickly ...">
+    <meta name="twitter:card" content="See salat times in your location; very quickly ...">
     <link rel="icon" href="https://salat.gql/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="https://salat.gq/favicon.ico" type="image/x-icon">
     <style>
@@ -56,22 +56,23 @@
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
-    <h4>Current Time</h4>
-    <h2 id='time'></h2>
+    <h3 id='time'></h3>
+    <h3 id='timezone'></h3>
+    <hr/>
+
+
+    <h4>Salat times</h4>
+    <h3 id='fazr'></h3>
+    <h3 id='zuhr'></h3>
+    <h3 id='hAsr'></h3>
+    <h3 id='sAsr'></h3>
+    <h3 id='maghrib'></h3>
+    <h3 id='isha'></h3>
     <hr/>
 
     <h4 class="title">Your Location</h4>
     <h3 id='ip'>fetching IP-location information</h3>
     <h3 id='location'></h3>
-    <hr/>
-
-    <h4>Salat times</h4>
-    <h2 id='fazr'></h2>
-    <h2 id='zuhr'></h2>
-    <h2 id='hAsr'></h2>
-    <h2 id='sAsr'></h2>
-    <h2 id='Maghrib'></h2>
-    <h2 id='Isha'></h2>
     <hr/>
 
     <footer align="right"><a href="/about.html">About</a></footer>
@@ -80,8 +81,10 @@
 
     <script async src="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.6/jstz.min.js"></script>
     <script>
-    var coordinates = [];
-        function timeNow() {
+        var coordinates = [],
+            hTimes = {},
+            sTimes = {};
+        var timeNow = function() {
             var d = new Date(),
                 h = (d.getHours() < 10 ? '0' : '') + d.getHours(),
                 m = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
@@ -93,7 +96,8 @@
 
             console.log('fetching IP information ... please wait');
             $.getJSON('https://freegeoip.net/json/?callback=?', function(ipData) {
-                $('#time').text(timeNow() + '  (' + jstz.determine().name() + ')');
+                $('#time').text('Current time : ' + timeNow());
+                $('#timezone').text('TimeZone : ' + jstz.determine().name() + '');
                 $('#ip').text('Your public IP: ' + ipData['ip']);
                 console.log(ipData);
                 coordinates = [ipData['latitude'], ipData['longitude']];
@@ -103,21 +107,18 @@
                     .done(function() {
                         console.log('salat times module loaded');
                         prayTimes.setMethod('Karachi');
-                        var hTimes = prayTimes.getTimes(new Date(), coordinates);
+                        hTimes = prayTimes.getTimes(new Date(), coordinates);
                         prayTimes.adjust({
                             asr: 'Hanafi'
                         });
-                        var sTimes = prayTimes.getTimes(new Date(), coordinates);
+                        sTimes = prayTimes.getTimes(new Date(), coordinates);
                         $('#fazr').text('Fajr: ' + hTimes['fajr']);
-                        $('#sunrise').text('Fajr: ' + hTimes['sunrise']);
-                        $('#zuhr').text('zuhr: ' + hTimes['dhuhr']);
+                        $('#zuhr').text('Zuhr: ' + hTimes['dhuhr']);
                         $('#hAsr').text('A\'sr (hanafi): ' + hTimes['asr']);
-                        // $('#sAsr').text('A\'sr (Standard): ' + sTimes['asr']);
-                        $('#sAsr').text('Maghrib: ' + hTimes['maghrib']);
-                        $('#fazr').text('Isha: ' + hTimes['isha']);
-
+                        $('#sAsr').text('A\'sr (Standard): ' + sTimes['asr']);
+                        $('#maghrib').text('Maghrib: ' + hTimes['maghrib']);
+                        $('#isha').text('Isha: ' + hTimes['isha']);
                     });
-
             });
 
             (function(i, s, o, g, r, a, m) {
