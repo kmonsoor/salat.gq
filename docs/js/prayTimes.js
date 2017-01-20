@@ -157,7 +157,7 @@ function PrayTimes(method) {
 	setting = {
 		imsak    : '10 min',
 		dhuhr    : '0 min',
-		asr      : 'Hanafi',
+		asr      : 'Standard',
 		highLats : 'NightMiddle'
 	},
 
