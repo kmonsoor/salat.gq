@@ -63,6 +63,7 @@
 
     <h4>Salat times</h4>
     <h3 id='fazr'></h3>
+    <h3 id='sunrise'></h3>
     <h3 id='zuhr'></h3>
     <h3 id='sAsr'></h3>
     <h3 id='hAsr'></h3>
@@ -70,7 +71,7 @@
     <h3 id='isha'></h3>
     <hr/>
 
-    <h4 class="title">Your Location</h4>
+    <!-- <h4 class="title">Your Location</h4> -->
     <h3 id='ip'>fetching IP-location information</h3>
     <h3 id='location'></h3>
     <hr/>
@@ -101,8 +102,8 @@
                 $('#ip').text('Your public IP: ' + ipData['ip']);
                 console.log(ipData);
                 coordinates = [ipData['latitude'], ipData['longitude']];
-                $('#location').text('Determined location: ' + ipData['latitude'] + ',' + ipData['longitude']
-                                     + '  (' + ipData['city'] + ',' + ipData['country_name'] + ')');
+                $('#location').text('Determined location: ' + ipData['latitude'] + ', ' + ipData['longitude']
+                                     + '  (' + ipData['city'] + ', ' + ipData['country_name'] + ')');
 
                 $.getScript("js/prayTimes.js")
                     .done(function() {
@@ -110,6 +111,7 @@
                         prayTimes.setMethod('Karachi');
                         sTimes = prayTimes.getTimes(new Date(), coordinates);
                         $('#fazr').text('Fajr: ' + sTimes['fajr']);
+                        $('#sunrise').text('Sunrise: ' + sTimes['sunrise']);
                         $('#zuhr').text('Zuhr: ' + sTimes['dhuhr']);
                         $('#sAsr').text('A\'sr (Standard): ' + sTimes['asr']);
                         $('#maghrib').text('Maghrib: ' + sTimes['maghrib']);
