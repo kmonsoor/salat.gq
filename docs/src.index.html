@@ -137,7 +137,7 @@
         $('#date').html("Salat times for today  (<b>" + (new Date()).toLocaleDateString('en-GB') + "</b>)");
 
         $.getJSON("https://freegeoip.net/json/?callback=", function (ipData) {
-            $('#timezone').html("TimeZone : <b>" + ipData.time_zone + "</b>");
+            $('#timezone').html("Timezone : <b>" + ipData.time_zone + "</b>");
             $('#ip').html("Your public IP: <b>" + ipData.ip + "</b>");
             console.log(ipData);
 
