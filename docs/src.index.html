@@ -142,9 +142,9 @@
             console.log(ipData);
 
             if (ipData.city.length)
-                ipLocation = ipData.city.length + ', ' + ipData['country_name'];
+                ipLocation = ipData.city + ', ' + ipData['country_name'];
             else if (ipData.region_name.length)
-                ipLocation = ipData.region_name.length + ',' + ipData.country_name;
+                ipLocation = ipData.region_name + ',' + ipData.country_name;
             else
                 ipLocation = ipData.country_name;
 
