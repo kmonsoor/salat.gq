@@ -1,5 +1,5 @@
 # Get just the salat times. Get it Quick.
-Visit it on: https://salat.ga
+Visit it on: https://salat.gq
 
 Salat-times calculation code: Hamid Zarrabi-Zadeh  
 Timezone-detection code: Jon Nylander (pellepim)  
